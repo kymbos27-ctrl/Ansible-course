@@ -17,6 +17,27 @@
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
+  - name: create user
+    tags: always
+    ansible.builtin.user:
+      name: user2
+      groups: root
+
+  - name: create sudo fule for user2
+    tags: always
+    ansible.builtin.copy:
+      src: sudoer_user2
+      dest: /etc/sudoers.d/user2
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: add ssh key 4 user2
+    tags: always
+    ansible.builtin.authorized_key:
+      user: user2
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICbNkKoykEbQHXni+gAhzZj3ecnENkkkKw/zrF7Inaa4 user@ubuntu-ws"
+
 - hosts: web_servers
   become: true
   tasks:
